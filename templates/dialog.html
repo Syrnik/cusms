@@ -1,0 +1,179 @@
+{if !empty($phones)}
+<div id="send-sms-dialog" class="dialog" style="display: none">
+    <div class="dialog-background"></div>
+    <div class="dialog-window">
+        <form class="form">
+            <div class="dialog-content">
+                <div class="dialog-content-indent">
+                    <h1>{_wp("Send SMS to Customer")}</h1>
+                    <label for="s-plugin-cusms-sender-select"
+                           style="display:block;font-weight:bold;margin-bottom:0.5em">
+                        {_wp("Sender")}
+                    </label>
+
+                    <div style="margin-bottom: 1em">
+                        <select id="s-plugin-cusms-sender-select" style="width: 40%" name="sender_select">
+                            <option value="default" selected>{_wp("Default assigned by SMS gateway")}</option>
+                            <option value="custom">{_wp("Custom")}</option>
+                        </select>
+                        <input name="from" type="text" placeholder="{_wp("Sender")}" style="display:none" id="s-plugin-cusms-sender-input" value="">
+                    </div>
+                    <label for="s-plugin-cusms-phone"
+                           style="display:block;font-weight:bold;margin-bottom:0.5em">
+                        {_wp("Phone")}
+                    </label>
+
+                    <div style="margin-bottom: 1em">
+                        {html_options name=phone options=$phones selected=current(array_keys($phones))}
+                    </div>
+                    <label for="s-plugin-cusms-msgbody" style="display:block;font-weight:bold;margin-bottom:0.5em">
+                        {_wp("Message body")}
+                    </label>
+                    <textarea name="smstext" placeholder="Message body" wrap="soft" maxlength="400" id="s-plugin-cusms-msgbody"
+                              rows="5" style="width:100%"></textarea>
+
+                    <p>
+                        <b id="smsCount"></b> SMS, {_wp('Characters left:')}<b id="smsLength"></b> <span
+                                class="hint">({_wp("Max. 3 SMS")})</span>
+                    </p>
+
+                </div>
+            </div>
+            <div class="dialog-buttons">
+                <div class="dialog-buttons-gradient">
+                    <button type="button" class="cancel button">{_wp('Cancel')}</button>
+                    <button type="submit" class="button green">{_wp('Send')}</button>
+                    <span id="s-plugin-cusms-processing" style="color:green;font-weight: bold;font-style: italic;display: none;margin-left: 2em;">
+                        <i class="icon16 loading" style="margin:7px 0.25em 0 0"></i>
+                        {_wp("Sending SMS…")}
+                    </span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<li>
+    <a id="s-plugin-cusms-send-dialog-link" href="javascript:void(0);">
+        <i class="icon16 mobile"></i>
+        {_wp('Send SMS')}
+    </a>
+</li>
+<script type="text/javascript">
+    (function ($) {
+        $.fn.smsArea = function (options) {
+            var
+                    e = this,
+                    cutStrLength = 0,
+
+                    s = $.extend({
+
+                        cut: true,
+                        maxSmsNum: 3,
+                        interval: 400,
+
+                        counters: {
+                            message: $('#smsCount'),
+                            character: $('#smsLength')
+                        },
+
+                        lengths: {
+                            ascii: [160, 306, 459],
+                            unicode: [70, 134, 201]
+                        }
+                    }, options);
+
+            e.keyup(function () {
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(function () {
+                    var
+                            smsType,
+                            smsLength = 0,
+                            smsCount = -1,
+                            charsLeft = 0,
+                            text = e.val(),
+                            isUnicode = false;
+
+                    for (var charPos = 0; charPos < text.length; charPos++) {
+                        switch (text[charPos]) {
+                            case "\n":
+                            case "[":
+                            case "]":
+                            case "\\":
+                            case "^":
+                                {literal}
+                            case "{":
+                            case "}":
+                                {/literal}
+                            case "|":
+                            case "€":
+                                smsLength += 2;
+                                break;
+
+                            default:
+                                smsLength += 1;
+                        }
+
+                        //!isUnicode && text.charCodeAt(charPos) > 127 && text[charPos] != "€" && (isUnicode = true)
+                        if (text.charCodeAt(charPos) > 127 && text[charPos] != "€")
+                            isUnicode = true;
+                    }
+
+                    if (isUnicode)   smsType = s.lengths.unicode;
+                    else                smsType = s.lengths.ascii;
+
+                    for (var sCount = 0; sCount < s.maxSmsNum; sCount++) {
+
+                        cutStrLength = smsType[sCount];
+                        if (smsLength <= smsType[sCount]) {
+
+                            smsCount = sCount + 1;
+                            charsLeft = smsType[sCount] - smsLength;
+                            break
+                        }
+                    }
+
+                    if (s.cut) e.val(text.substring(0, cutStrLength));
+                    smsCount == -1 && (smsCount = s.maxSmsNum, charsLeft = 0);
+
+                    s.counters.message.html(smsCount);
+                    s.counters.character.html(charsLeft);
+
+                }, s.interval)
+            }).keyup()
+        }
+    }(jQuery));
+
+    $(function () {
+        $("#s-plugin-cusms-send-dialog-link").click(function () {
+
+            $('#send-sms-dialog').waDialog({
+                height: 380,
+                width: 550,
+                onSubmit: function (d) {
+                    $("#s-plugin-cusms-processing").show();
+                    $.post("?plugin=cusms&module=sendsms",{
+
+                    }, function(){
+                        $("#s-plugin-cusms-processing").hide();
+                    }, 'json');
+                    d.trigger('close');
+                    return false;
+                },
+                onCancel: function (d) {
+                    $('form', d).get(0).reset();
+                }
+            });
+        });
+        $("#s-plugin-cusms-msgbody").smsArea({
+            maxSmsNum: 3}
+        );
+        $("#s-plugin-cusms-sender-select").change(function(){
+            if($(this).val() === 'custom') {
+                $("#s-plugin-cusms-sender-input").show();
+            } else {
+                $("#s-plugin-cusms-sender-input").hide();
+            }
+        });
+    });
+</script>
+{/if}
