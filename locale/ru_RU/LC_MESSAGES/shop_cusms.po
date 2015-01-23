@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: shop/plugins/cusms\n"
+"POT-Creation-Date: 2015-01-23 12:41+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Serge Rodovnichenko <sergerod@gmail.com>\n"
+"Language-Team: shop/plugins/cusms\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n"
+"%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:9
+msgid "Send SMS to Customer"
+msgstr "Отправить SMS покупателю"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:12
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:20
+msgid "Sender"
+msgstr "Отправитель"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:17
+msgid "Default assigned by SMS gateway"
+msgstr "Назначенный SMS-шлюзом"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:18
+msgid "Custom"
+msgstr "Указать"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:24
+msgid "Phone"
+msgstr "Телефон"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:31
+msgid "Message body"
+msgstr "Текст сообщения"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:38
+msgid "Max. 3 SMS"
+msgstr "Макс. 3 SMS"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:49
+msgid "Sending SMS…"
+msgstr "Отправка SMS…"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:37
+msgid "Characters left:"
+msgstr "Осталось символов:"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:45
+msgid "Cancel"
+msgstr "Закрыть"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:46
+msgid "Send"
+msgstr "Отправить"
+
+#: /wa-apps/shop/plugins/cusms/templates/dialog.html:63
+msgid "Send SMS"
+msgstr "Отправить SMS"
+
+#: /wa-apps/shop/plugins/cusms/lib/actions/shopCusmsPluginSendsms.controller.php:18
+msgid "Invalid phone number"
+msgstr "Неверный номер телефона"
+
+#: /wa-apps/shop/plugins/cusms/lib/actions/shopCusmsPluginSendsms.controller.php:22
+msgid "Invalid text"
+msgstr "Ошибочный текст"
+
+#: /wa-apps/shop/plugins/cusms/lib/actions/shopCusmsPluginSendsms.controller.php:47
+msgid "SMS gateway error"
+msgstr "Ошибка SMS-шлюза"
+
+#: /wa-apps/shop/plugins/cusms/lib/actions/shopCusmsPluginSendsms.controller.php:49
+msgid "Message sent"
+msgstr "Сообщение отправлено"
+
+#: /wa-apps/shop/plugins/cusms/lib/actions/shopCusmsPluginSendsms.controller.php:67
+msgid "%s <b>sent SMS to the customer on the number %s</b><p>%s</p>"
+msgstr "%s <b>отправил SMS покупателю на номер %s</b><p>%s</p>"
+
+#: /wa-apps/shop/plugins/cusms/lib/config/plugin.php:3
+msgid "SMS to customer"
+msgstr "SMS покупателю"
