@@ -3,6 +3,7 @@
     <div class="dialog-background"></div>
     <div class="dialog-window">
         <form class="form">
+            <input type="hidden" name="order_id" value="{$order_id}">
             <div class="dialog-content">
                 <div class="dialog-content-indent">
                     <h1>{_wp("Send SMS to Customer")}</h1>
@@ -46,6 +47,10 @@
                     <span id="s-plugin-cusms-processing" style="color:green;font-weight: bold;font-style: italic;display: none;margin-left: 2em;">
                         <i class="icon16 loading" style="margin:7px 0.25em 0 0"></i>
                         {_wp("Sending SMS…")}
+                    </span>
+                    <span id="s-plugin-cusms-error" style="color:red;font-weight: bold;font-style: italic;display: none;margin-left: 2em;">
+                        <i class="icon16 cross" style="margin:7px 0.25em 0 0"></i>
+                        <span></span>
                     </span>
                 </div>
             </div>
@@ -144,22 +149,68 @@
     }(jQuery));
 
     $(function () {
+
+        // Возможно, не все браузеры поддеживают Ecmascript 5
+        // Шаги алгоритма ECMA-262, 5-е издание, 15.4.4.18
+        // Ссылка (en): http://es5.github.io/#x15.4.4.18
+        if (!Array.prototype.forEach) {
+            Array.prototype.forEach = function (callback, thisArg) {
+                var T, k;
+                if (this == null) {
+                    throw new TypeError(' this is null or not defined');
+                }
+                var O = Object(this);
+                var len = O.length >>> 0;
+                if (typeof callback !== 'function') {
+                    throw new TypeError(callback + ' is not a function');
+                }
+                if (arguments.length > 1) {
+                    T = thisArg;
+                }
+                k = 0;
+                while (k < len) {
+                    var kValue;
+                    if (k in O) {
+                        kValue = O[k];
+                        callback.call(T, kValue, k, O);
+                    }
+                    k++;
+                }
+            };
+        };
+
         $("#s-plugin-cusms-send-dialog-link").click(function () {
 
             $('#send-sms-dialog').waDialog({
                 height: 380,
                 width: 550,
                 onSubmit: function (d) {
+                    $("#s-plugin-cusms-error").hide();
                     $("#s-plugin-cusms-processing").show();
-                    $.post("?plugin=cusms&module=sendsms",{
-
-                    }, function(){
-                        $("#s-plugin-cusms-processing").hide();
-                    }, 'json');
-                    d.trigger('close');
+                    $.post(
+                        "?plugin=cusms&module=sendsms",
+                        $(this).serialize(),
+                        function(r){
+                            $("#s-plugin-cusms-processing").hide();
+                            if(r.status === 'fail') {
+                                var err_msgs = [];
+                                r.errors.forEach(function(error){
+                                    err_msgs.push(error[0]);
+                                });
+                                $("span", "#s-plugin-cusms-error").text(err_msgs.join());
+                                $("#s-plugin-cusms-error").show();
+                            } else {
+                                $("#s-plugin-cusms-error").hide();
+                                d.trigger('close');
+                                $.order.reload();
+                            }
+                        },
+                        'json'
+                    );
                     return false;
                 },
                 onCancel: function (d) {
+                    $("#s-plugin-cusms-error").hide();
                     $('form', d).get(0).reset();
                 }
             });
