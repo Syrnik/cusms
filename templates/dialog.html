@@ -1,4 +1,7 @@
 {if !empty($phones)}
+<a id="s-plugin-cusms-send-dialog-link" href="javascript:void(0);">
+    <i class="icon16 mobile"></i>{_wp('Send SMS')}
+</a>
 <div id="send-sms-dialog" class="dialog" style="display: none">
     <div class="dialog-background"></div>
     <div class="dialog-window">
@@ -30,8 +33,8 @@
                     <label for="s-plugin-cusms-msgbody" style="display:block;font-weight:bold;margin-bottom:0.5em">
                         {_wp("Message body")}
                     </label>
-                    <textarea name="smstext" placeholder="Message body" wrap="soft" maxlength="400" id="s-plugin-cusms-msgbody"
-                              rows="5" style="width:100%"></textarea>
+                <textarea name="smstext" placeholder="Message body" wrap="soft" maxlength="400" id="s-plugin-cusms-msgbody"
+                          rows="5" style="width:100%"></textarea>
 
                     <p>
                         <b id="smsCount"></b> SMS, {_wp('Characters left:')}<b id="smsLength"></b> <span
@@ -44,25 +47,19 @@
                 <div class="dialog-buttons-gradient">
                     <button type="button" class="cancel button">{_wp('Cancel')}</button>
                     <button type="submit" class="button green">{_wp('Send')}</button>
-                    <span id="s-plugin-cusms-processing" style="color:green;font-weight: bold;font-style: italic;display: none;margin-left: 2em;">
-                        <i class="icon16 loading" style="margin:7px 0.25em 0 0"></i>
-                        {_wp("Sending SMS…")}
-                    </span>
-                    <span id="s-plugin-cusms-error" style="color:red;font-weight: bold;font-style: italic;display: none;margin-left: 2em;">
-                        <i class="icon16 cross" style="margin:7px 0.25em 0 0"></i>
-                        <span></span>
-                    </span>
+                <span id="s-plugin-cusms-processing" style="color:green;font-weight: bold;font-style: italic;display: none;margin-left: 2em;">
+                    <i class="icon16 loading" style="margin:7px 0.25em 0 0"></i>
+                    {_wp("Sending SMS…")}
+                </span>
+                <span id="s-plugin-cusms-error" style="color:red;font-weight: bold;font-style: italic;display: none;margin-left: 2em;">
+                    <i class="icon16 cross" style="margin:7px 0.25em 0 0"></i>
+                    <span></span>
+                </span>
                 </div>
             </div>
         </form>
     </div>
 </div>
-<li>
-    <a id="s-plugin-cusms-send-dialog-link" href="javascript:void(0);">
-        <i class="icon16 mobile"></i>
-        {_wp('Send SMS')}
-    </a>
-</li>
 <script type="text/javascript">
     (function ($) {
         $.fn.smsArea = function (options) {
@@ -188,24 +185,24 @@
                     $("#s-plugin-cusms-error").hide();
                     $("#s-plugin-cusms-processing").show();
                     $.post(
-                        "?plugin=cusms&module=sendsms",
-                        $(this).serialize(),
-                        function(r){
-                            $("#s-plugin-cusms-processing").hide();
-                            if(r.status === 'fail') {
-                                var err_msgs = [];
-                                r.errors.forEach(function(error){
-                                    err_msgs.push(error[0]);
-                                });
-                                $("span", "#s-plugin-cusms-error").text(err_msgs.join());
-                                $("#s-plugin-cusms-error").show();
-                            } else {
-                                $("#s-plugin-cusms-error").hide();
-                                d.trigger('close');
-                                $.order.reload();
-                            }
-                        },
-                        'json'
+                            "?plugin=cusms&module=sendsms",
+                            $(this).serialize(),
+                            function(r){
+                                $("#s-plugin-cusms-processing").hide();
+                                if(r.status === 'fail') {
+                                    var err_msgs = [];
+                                    r.errors.forEach(function(error){
+                                        err_msgs.push(error[0]);
+                                    });
+                                    $("span", "#s-plugin-cusms-error").text(err_msgs.join());
+                                    $("#s-plugin-cusms-error").show();
+                                } else {
+                                    $("#s-plugin-cusms-error").hide();
+                                    d.trigger('close');
+                                    $.order.reload();
+                                }
+                            },
+                            'json'
                     );
                     return false;
                 },
@@ -216,7 +213,7 @@
             });
         });
         $("#s-plugin-cusms-msgbody").smsArea({
-            maxSmsNum: 3}
+                    maxSmsNum: 3}
         );
         $("#s-plugin-cusms-sender-select").change(function(){
             if($(this).val() === 'custom') {
