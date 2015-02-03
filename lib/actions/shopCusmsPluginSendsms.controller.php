@@ -62,9 +62,11 @@ class shopCusmsPluginSendsmsController extends waJsonController
                 $phoneFormatter = new waContactPhoneFormatter();
 
                 $OrderLog->add(array(
-                    'order_id'  => $order_id,
-                    'action_id' => '',
-                    'text'      => '<i class="icon16 mobile"></i>' .
+                    'order_id'        => $order_id,
+                    'action_id'       => '',
+                    'before_state_id' => $order['state_id'],
+                    'after_state_id'  => $order['state_id'],
+                    'text'            => '<i class="icon16 mobile"></i> ' .
                         sprintf(_wp("%s <b>sent SMS to the customer on the number %s</b><p>%s</p>"), wa()->getUser()->getName(), $phoneFormatter->format($phone), htmlspecialchars($message)),
                 ));
             }
