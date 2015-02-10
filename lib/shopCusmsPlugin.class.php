@@ -6,6 +6,7 @@
  * @author Serge Rodovnichenko <sergerod@syrnik.com>
  * @license http://www.webasyst.com/terms/#eula Webasyst
  * @copyright Syrnik.Com, 2015
+ * @version 1.0.1
  */
 
 /**

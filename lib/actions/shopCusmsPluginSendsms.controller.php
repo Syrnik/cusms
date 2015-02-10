@@ -4,6 +4,11 @@
  * @package shopCusmsPlugin.controller
  * @author Serge Rodovnichenko <serge@syrnik.com>
  * @license http://www.webasyst.com/terms/#eula Webasyst
+ * @version 1.0.1
+ *
+ * CHANGELOG:
+ * 1.0.1
+ *   - Escaping reciever's name
  *
  */
 class shopCusmsPluginSendsmsController extends waJsonController
@@ -26,6 +31,10 @@ class shopCusmsPluginSendsmsController extends waJsonController
 
         if ($this->errors) {
             return;
+        }
+
+        if($from) {
+            $from = htmlspecialchars($from);
         }
 
         $sms = new waSMS();
