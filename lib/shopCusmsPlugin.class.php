@@ -21,7 +21,11 @@ class shopCusmsPlugin extends shopPlugin
     {
         $view = wa()->getView();
 
-        $phones = isset($order['contact']) ? $this->getPhones($order['contact']) : array();
+        try {
+            $phones = isset($order['contact']) ? $this->getPhones($order['contact']) : array();
+        } catch (waException $e) {
+            $phones = array();
+        }
         $order_id = $order['id'];
 
         $view->assign(compact('phones', 'order_id'));
@@ -32,6 +36,7 @@ class shopCusmsPlugin extends shopPlugin
     /**
      * @param array $contact
      * @return array
+     * @throws waException
      */
     private function getPhones($contact)
     {
